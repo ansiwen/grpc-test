@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"crypto/ecdsa"
+	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/pem"
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"sync"
 	"time"
@@ -29,16 +29,15 @@ var (
 )
 
 func init() {
-	flag.StringVar(&serverAddress, "serverAddress", "localhost:50051", "Address of the gRPC server")
-	// flag.StringVar(&message, "message", "", "Message to sign")
-	flag.StringVar(&publicKeyPath, "publicKey", "", "Path to the PEM file of the public key")
-	flag.IntVar(&count, "N", 1, "Number of requests")
-	flag.IntVar(&threads, "threads", 1, "Number of concurrent requests")
+	flag.StringVar(&serverAddress, "srv", "localhost:50051", "Address of the gRPC server")
+	flag.StringVar(&publicKeyPath, "pub", "", "Path to the PEM file of the public key")
+	flag.IntVar(&count, "n", 1, "Number of requests")
+	flag.IntVar(&threads, "j", 1, "Number of concurrent jobs")
 	flag.Parse()
 }
 
 func main() {
-	if /* message == "" ||*/ publicKeyPath == "" {
+	if publicKeyPath == "" {
 		log.Fatal("Usage: client -message <message> -publicKey <public_key.pem>")
 	}
 
@@ -57,8 +56,6 @@ func main() {
 	client := pb.NewSignServiceClient(conn)
 
 	ctx := context.Background()
-
-	// hashed := sha256.Sum256([]byte(message))
 
 	chout := make(chan time.Duration)
 	chin := make(chan struct{})

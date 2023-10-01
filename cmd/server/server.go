@@ -70,7 +70,7 @@ func loadPrivateKey() (*ecdsa.PrivateKey, error) {
 }
 
 func main() {
-	flag.StringVar(&privateKeyPath, "privateKey", "../../private_key.pem", "Path to the PEM file of the private key")
+	flag.StringVar(&privateKeyPath, "priv", "../../private_key.pem", "Path to the PEM file of the private key")
 	flag.Parse()
 
 	if privateKeyPath == "" {
